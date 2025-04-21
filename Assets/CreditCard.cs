@@ -5,9 +5,14 @@ using UnityEngine;
 
 public class CreditCard : MonoBehaviour {
 
-    protected long CreditCardNumber;
-    protected int CVVNumber;
-    protected Company Company;
+    public long CreditCardNumber;
+    public int CVVNumber;
+    public Company Company;
+    public string CreditCardNumberStr {
+        get {
+            return Util.LongToText(CreditCardNumber, 16);
+        }
+    }
 
     public BuddyBidding Module;
 

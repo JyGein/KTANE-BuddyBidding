@@ -9,12 +9,15 @@ public class ModuleBot
     public int MaxBid;
     public float TimeTillBid;
     public int CurrentBid;
-    public delegate void PlaceBidAction(int amount);
-    public void Update()
+    public void Update(BuddyBidding Module, Auction auction)
     {
         if (TimeTillBid > 0)
         {
             TimeTillBid -= Time.deltaTime;
+            if(TimeTillBid <= 0) {
+                TimeTillBid = 0;
+
+            }
         }
     }
 }

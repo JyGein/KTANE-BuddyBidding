@@ -6,12 +6,10 @@ using UnityEngine;
 
 public class Auction
 {
-    public List<ModuleBot> ModuleBidders;
+    public List<ModuleBot> ModuleBidders = new List<ModuleBot>();
     public Item Item;
     public int PlayerBid = 0;
     public float Timer;
-    public delegate void AuctionSellAction(Auction auction);
-    public AuctionSellAction SellItem;
     public int CurrentBid
     {
         get
@@ -46,7 +44,7 @@ public class Auction
         }
         return output;
     }
-    public void Update()
+    public void Update(BuddyBidding Module)
     {
         if (Timer > 0)
         {
@@ -54,8 +52,17 @@ public class Auction
             if (Timer <=0)
             {
                 Timer = 0;
-                SellItem(this);
+                //Module.SellItem(this);
+            }
+            else {
+                foreach(ModuleBot bot in ModuleBidders) {
+                    bot.Update(Module, this);
+                }
             }
         }
+    }
+    public string GetText() 
+    {
+        return "";
     }
 }

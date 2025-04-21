@@ -13,6 +13,7 @@ public enum CostState
 }
 public enum Item
 {
+    Buddy = -1,
     MegaMushroom,
     Smartphone,
     Chair,
@@ -23,4 +24,12 @@ public enum Item
     Table,
     SpinyShell,
     PrinterInk
+}
+
+public enum Buddy {
+    Red,
+    Green,
+    Yellow,
+    Blue,
+    Pink
 }

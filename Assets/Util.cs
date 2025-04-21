@@ -29,4 +29,28 @@ public static class Util
         }
         return output;
     }
+    public static int SumPosition(string number, bool Even) {
+        int output = 0;
+        for (int i = Even ? 1 : 0; i < number.Length; i += 2) {
+            output += (int)number[i];
+        }
+        return output;
+    }
+    public static int DigitalRoot(int number) {
+        int output = number % 9;
+        output = output == 0 ? 9 : output;
+        return output;
+    }
+    public static int DigitalRoot(long number) {
+        int output = (int)(number % 9);
+        output = output == 0 ? 9 : output;
+        return output;
+    }
+}
+
+public struct BidInfo {
+    public readonly Item item;
+    public readonly float timeLeft;
+    public readonly int currentBid;
+    public readonly CostState costState;
 }

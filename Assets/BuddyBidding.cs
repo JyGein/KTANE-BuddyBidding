@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,7 +31,7 @@ public class BuddyBidding : MonoBehaviour {
 
     public List<Texture> Items;
     public List<Texture> Buddies;
-    private Texture TodaysBuddy;
+    public Buddy TodaysBuddy;
 
     string ModuleName;
     static int ModuleIdCounter = 1;
@@ -40,6 +39,10 @@ public class BuddyBidding : MonoBehaviour {
     private bool ModuleSolved;
 
     private bool IsOpen = false;
+    public List<Auction> Auctions;
+    public int CurrentAuction;
+    public List<Item> ChosenItems;
+    public int PlayerBalance;
 
 #pragma warning disable IDE0051
     void Awake ()
@@ -48,8 +51,8 @@ public class BuddyBidding : MonoBehaviour {
         ModuleName = Module.ModuleDisplayName;
         ModuleId = ModuleIdCounter++;
         Module.OnActivate += Activate;
-        TodaysBuddy = Buddies[Rnd.Range(0, Buddies.Count)];
-        biddingPad.SetDisplay(TodaysBuddy);
+        TodaysBuddy = (Buddy)Rnd.Range(0, Buddies.Count);
+        biddingPad.SetDisplay(Buddies[(int)TodaysBuddy]);
         creditCard.Log += Log;
         foreach(KMSelectable child in GetComponent<KMSelectable>().Children)
         {
@@ -62,6 +65,7 @@ public class BuddyBidding : MonoBehaviour {
         }
         GetComponent<KMSelectable>().OnFocus += delegate () { IsSelected = true; };
         GetComponent<KMSelectable>().OnDefocus += delegate () { IsSelected = false; };
+        PlayerBalance = Step1.GenerateBalance(this, Bomb);
     }
 
     void Activate () 
@@ -82,17 +86,11 @@ public class BuddyBidding : MonoBehaviour {
 #pragma warning restore IDE0051
         if (IsSelected)
         {
-            // numpad handler
-            if (Input.GetKeyDown(KeyCode.Keypad0)) HandleNumber(0);
-            if (Input.GetKeyDown(KeyCode.Keypad1)) HandleNumber(1);
-            if (Input.GetKeyDown(KeyCode.Keypad2)) HandleNumber(2);
-            if (Input.GetKeyDown(KeyCode.Keypad3)) HandleNumber(3);
-            if (Input.GetKeyDown(KeyCode.Keypad4)) HandleNumber(4);
-            if (Input.GetKeyDown(KeyCode.Keypad5)) HandleNumber(5);
-            if (Input.GetKeyDown(KeyCode.Keypad6)) HandleNumber(6);
-            if (Input.GetKeyDown(KeyCode.Keypad7)) HandleNumber(7);
-            if (Input.GetKeyDown(KeyCode.Keypad8)) HandleNumber(8);
-            if (Input.GetKeyDown(KeyCode.Keypad9)) HandleNumber(9);
+            for(int i = 0; i <= 9; i++) {
+                if(Input.GetKeyDown(KeyCode.Keypad0 + i)) {
+                  HandleNumber(i);
+                }
+            }
             if (Input.GetKeyDown(KeyCode.KeypadEnter)) HandleSubmit();
             if (Input.GetKeyDown(KeyCode.Backspace)) HandleDelete();
             if (Input.GetKeyDown(KeyCode.RightArrow)) HandleRight();
@@ -109,6 +107,10 @@ public class BuddyBidding : MonoBehaviour {
     void HandleSubmit()
     {
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, gameObject.transform);
+        if (!IsOpen) {
+            IsOpen = true;
+            return;
+        }
     }
 
     void HandleDelete()
