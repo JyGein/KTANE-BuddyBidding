@@ -13,6 +13,6 @@ public static class Step1 {
         string S = Bomb.GetSerialNumber();
         int CVV = Module.creditCard.CVVNumber;
         int U = S.Distinct().Count();
-        return (((int)C[(int)S[2]-1] + 1) * ((int)C[(int)S[5]-1] + 1) * ((int)C[U+9] + 7 - U)) % 600 + CVV;
+        return ((int.Parse(C[int.Parse(S[2].ToString())].ToString()) + 1) * (int.Parse(C[int.Parse(S[5].ToString())].ToString()) + 1) * (int.Parse(C[U+9].ToString()) + 7 - U) + Util.SumPosition(Bomb.GetSerialNumber(), false)) % 600 + CVV;
     }
 }

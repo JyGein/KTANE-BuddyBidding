@@ -25,9 +25,9 @@ public class BiddingPad : MonoBehaviour
         }
     }
 
-	public void SetCost(int newCost, Color newColor)
+	public void SetCost(string newCost, Color newColor)
 	{
-		Cost.text = newCost.ToString();
+		Cost.text = newCost;
 		Cost.color = newColor;
     }
 
@@ -36,9 +36,9 @@ public class BiddingPad : MonoBehaviour
 		Display.material.mainTexture = newTexture;
     }
 
-    public void UpdateDisplay(BidInfo bidInfo) {
+    public void UpdateDisplay(BidInfo bidInfo, bool PlayerInput = false) {
         SetDisplay(Module.Items[(int)bidInfo.item]);
-        SetCost(bidInfo.currentBid, Util.CostColors[bidInfo.costState]);
+        SetCost((bidInfo.costState == CostState.Default && !PlayerInput) ? "$$$" : Util.IntToText(bidInfo.currentBid, 3), Util.CostColors[bidInfo.costState]);
         TimeLeft = bidInfo.timeLeft;
     }
 

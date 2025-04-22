@@ -45,6 +45,7 @@ public class CreditCard : MonoBehaviour {
         GetComponent<MeshRenderer>().material = CompanyMats[(int)Company];
         Module.Log($"Credit Card Number: {CreditCardNumber}");
         Module.Log($"CVV: {CVVNumber}");
+        Module.Log($"Company: {Company}");
     }
 
     // Update is called once per frame

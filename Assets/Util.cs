@@ -32,10 +32,19 @@ public static class Util
     public static int SumPosition(string number, bool Even) {
         int output = 0;
         for (int i = Even ? 1 : 0; i < number.Length; i += 2) {
-            output += (int)number[i];
+            output += IntParseA10Z35(number[i]);
         }
         return output;
     }
+    public static int IntParseA10Z35(char c)
+    {
+        int i;
+        if(!int.TryParse(c.ToString(), out i))
+        {
+            return c - 31;
+        }
+        return i;
+     }
     public static int DigitalRoot(int number) {
         int output = number % 9;
         output = output == 0 ? 9 : output;
@@ -46,11 +55,33 @@ public static class Util
         output = output == 0 ? 9 : output;
         return output;
     }
+    public static bool ShareALetter(string first, string second)
+    {
+        foreach(char c in first)
+        {
+            foreach(char ch in second)
+            {
+                if (c == ch) return true;
+            }
+        }
+        return false;
+    }
+    public static int mod(int x, int m)
+    {
+        return (x % m + m) % m;
+    }
 }
 
 public struct BidInfo {
     public readonly Item item;
     public readonly float timeLeft;
-    public readonly int currentBid;
+    public int currentBid;
     public readonly CostState costState;
+    public BidInfo(Item _item, float _timeLeft, int _currentBid, CostState _costState )
+    {
+        item = _item;
+        timeLeft = _timeLeft;
+        currentBid = _currentBid;
+        costState = _costState;
+    }
 }
