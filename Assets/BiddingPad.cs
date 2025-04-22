@@ -14,13 +14,14 @@ public class BiddingPad : MonoBehaviour
     public MeshRenderer Display;
 	public TextMesh Cost;
     public TextMesh Timer;
+    public MeshRenderer Sold;
     public float TimeLeft {
         set {
-            int i = (int)Math.Round(value, MidpointRounding.AwayFromZero);
-            int minutes = (i % 60);
+            int i = (int)Math.Ceiling(value);
+            int minutes = (i / 60);
             string text = minutes.ToString();
             text += ":";
-            text += (i - (minutes * 60)).ToString();
+            text += Util.IntToText(i % 60, 2);
             Timer.text = text;
         }
     }
@@ -37,9 +38,19 @@ public class BiddingPad : MonoBehaviour
     }
 
     public void UpdateDisplay(BidInfo bidInfo, bool PlayerInput = false) {
-        SetDisplay(Module.Items[(int)bidInfo.item]);
+        if (bidInfo.item == Item.Buddy)
+        {
+            SetDisplay(Module.Buddies[(int)Module.TodaysBuddy]);
+            Timer.text = "";
+            Sold.enabled = false;
+        }
+        else
+        {
+            SetDisplay(Module.Items[(int)bidInfo.item]);
+            TimeLeft = bidInfo.timeLeft;
+            Sold.enabled = bidInfo.timeLeft == 0;
+        }
         SetCost((bidInfo.costState == CostState.Default && !PlayerInput) ? "$$$" : Util.IntToText(bidInfo.currentBid, 3), Util.CostColors[bidInfo.costState]);
-        TimeLeft = bidInfo.timeLeft;
     }
 
     // Use this for initialization

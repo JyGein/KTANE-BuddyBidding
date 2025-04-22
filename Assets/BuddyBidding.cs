@@ -10,6 +10,7 @@ using System.Security.AccessControl;
 using Events;
 using Assets.Scripts.Records;
 using Assets.Scripts.Utility;
+using static MB3_MeshBakerRoot.ZSortObjects;
 
 //HI :3 gl with modding
 
@@ -46,6 +47,7 @@ public class BuddyBidding : MonoBehaviour {
     public int CurrentAuction = 0;
     public List<Item> ChosenItems = new List<Item>();
     public int PlayerBalance = 0;
+    public int SpentMoney = 0;
     public bool ActuallyDonating = false;
     public int LostWantedItems = 0;
     public int BoughtWantedItems = 0;
@@ -109,33 +111,37 @@ public class BuddyBidding : MonoBehaviour {
                 int BotNum = Rnd.Range(0, 3);
                 List<ModuleBot> NewBots = new List<ModuleBot>();
                 int ThisMaxBotsBid = 0;
-                for (int i = 0; i <= BotNum; i++)
+                for (int i = 0; i < BotNum; i++)
                 {
-                    int maxBid = Rnd.Range(50, MaxofBotMaxes - WantedItemMaxBidRunningTotal);
+                    int maxBid = Rnd.Range(50, (MaxofBotMaxes - WantedItemMaxBidRunningTotal)/Auctions.Count());
                     ModuleBot NewBot = new ModuleBot { MaxBid = maxBid };
                     NewBots.Add(NewBot);
                     WantedItemBots.Add(NewBot);
                     ThisMaxBotsBid = ThisMaxBotsBid > maxBid ? ThisMaxBotsBid : maxBid;
+                    Log($"New bot generated on Item {item}. It's max bid is {maxBid}.");
                 }
                 WantedItemMaxBidRunningTotal += ThisMaxBotsBid;
                 Auctions.Add(new Auction { Item = item, ModuleBidders = NewBots });
             }
             AttemptToMaxoutMaxBids();
         }
+        Log("Other Items:");
         while (Auctions.Count < 7)
         {
             Item thisOnesItem = (Item)Rnd.Range(0, 10);
             while (Auctions.Select((a) => a.Item).Contains(thisOnesItem)) thisOnesItem = (Item)Rnd.Range(0, 10);
+            Log($"{thisOnesItem}");
             List<ModuleBot> NewBots = new List<ModuleBot>();
             int BotNum = Rnd.Range(0, 3);
-            for (int i = 0; i <= BotNum; i++)
+            for (int i = 0; i < BotNum; i++)
             {
                 int maxBid = Rnd.Range(50, 400);
                 NewBots.Add(new ModuleBot { MaxBid = maxBid });
+                Log($"New bot generated on Item {thisOnesItem}. It's max bid is {maxBid}.");
             }
             Auctions.Add(new Auction { Item = thisOnesItem, ModuleBidders = NewBots });
         }
-        Auctions = Auctions.Shuffle();
+        Auctions = Auctions.OrderBy(a => a.Item).ToList();
     }
 
     private bool IsSelected = false;
@@ -163,8 +169,6 @@ public class BuddyBidding : MonoBehaviour {
             }
             UpdateDisplay();
         }
-        print($"{CurrentPlayerInput}");
-        print($"{CurrentAuction}");
     }
 
     void UpdateDisplay()
@@ -176,10 +180,12 @@ public class BuddyBidding : MonoBehaviour {
 
     void AttemptToMaxoutMaxBids()
     {
-        if (Auctions.Where((a) => a.ModuleBidders.Count > 0 && ChosenItems.Contains(a.Item)).Count() >= 3)
+        List<Auction> ValidAuctions = Auctions.Where((a) => a.ModuleBidders.Count > 0 && ChosenItems.Contains(a.Item)).ToList();
+        if (ValidAuctions.Count() >= 3)
         {
-            Auction SelectedAuction = Auctions[Rnd.Range(1, 4)];
+            Auction SelectedAuction = ValidAuctions[Rnd.Range(0, 3)];
             ModuleBot SelectedBot = SelectedAuction.ModuleBidders.OrderByDescending(b => b.MaxBid).ToList()[0];
+            Log($"All wanted item auctions have a bot, changing the max bid of the bot on the auction for item {SelectedAuction.Item} with max bid {SelectedBot.MaxBid} to {MaxofBotMaxes - WantedItemMaxBidRunningTotal + SelectedBot.MaxBid}.");
             SelectedBot.MaxBid += MaxofBotMaxes - WantedItemMaxBidRunningTotal;
             WantedItemMaxBidRunningTotal = MaxofBotMaxes;
         }
@@ -197,6 +203,7 @@ public class BuddyBidding : MonoBehaviour {
     {
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, gameObject.transform);
         if (!IsOpen) {
+            Log($"Opening auctions!");
             IsOpen = true;
             foreach(Auction auction in Auctions)
             {
@@ -207,11 +214,13 @@ public class BuddyBidding : MonoBehaviour {
         Auction SelectedAuction = Auctions[CurrentAuction];
         if (SelectedAuction.Item == Item.Buddy)
         {
-            if (ActuallyDonating) 
+            Log($"Attempting to donate {CurrentPlayerInput} to Buddy.");
+            if (ActuallyDonating)
             {
                 if (CurrentPlayerInput + DonataedAmount > PlayerBalance) Strike("You donated too much money! Strike Issued!");
                 else
                 {
+                    Log($"Donation received.");
                     DonataedAmount += CurrentPlayerInput;
                     if (DonataedAmount >= PlayerBalance)
                     {
@@ -219,9 +228,11 @@ public class BuddyBidding : MonoBehaviour {
                     }
                 }
             }
+            else Log($"Unicorn not active, input removed.");
             CurrentPlayerInput = 0;
             return;
         }
+        Log($"Bidding {CurrentPlayerInput} coins on {SelectedAuction.Item}.");
         if (SelectedAuction.CurrentBid < CurrentPlayerInput)
         {
             if (!ChosenItems.Contains(SelectedAuction.Item) && CurrentPlayerInput > 50)
@@ -229,7 +240,8 @@ public class BuddyBidding : MonoBehaviour {
                 int diff = SelectedAuction.PlayerBid >= 50 ? CurrentPlayerInput - SelectedAuction.PlayerBid : CurrentPlayerInput - 50;
                 if (WantedItemBots.Count() > 0)
                 {
-                    WantedItemBots.Shuffle()[0].MaxBid -= diff;
+                    Log($"Your bluff will make the bot on a wanted item with max bid {WantedItemBots.OrderByDescending(b => b.MaxBid).ToList()[0].MaxBid} have {diff} less to bid.");
+                    WantedItemBots.OrderByDescending(b => b.MaxBid).ToList()[0].MaxBid -= diff;
                     WantedItemMaxBidRunningTotal -= diff;
                     MaxofBotMaxes -= diff;
                 }
@@ -240,6 +252,7 @@ public class BuddyBidding : MonoBehaviour {
                 int maxBid = Rnd.Range(50, ChosenItems.Contains(SelectedAuction.Item) ? MaxofBotMaxes - WantedItemMaxBidRunningTotal : 400);
                 ModuleBot NewBot = new ModuleBot { MaxBid = maxBid };
                 SelectedAuction.ModuleBidders.Add(NewBot);
+                Log($"New bot generated on Item {SelectedAuction.Item}. It's max bid is {maxBid}.");
                 if (ChosenItems.Contains(SelectedAuction.Item))
                 {
                     WantedItemBots.Add(NewBot);
@@ -249,6 +262,7 @@ public class BuddyBidding : MonoBehaviour {
             }
             SelectedAuction.OnBidPlaced();
         }
+        else Log($"Bid is lower than the current highest bid, input removed.");
         CurrentPlayerInput = 0;
         return;
     }
@@ -258,14 +272,15 @@ public class BuddyBidding : MonoBehaviour {
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, gameObject.transform);
         if (!IsOpen) return;
         if (CurrentPlayerInput.ToString().Count() <= 0) return;
-        CurrentPlayerInput = int.Parse(CurrentPlayerInput.ToString().Substring(0, CurrentPlayerInput.ToString().Count()-1));
+        if (CurrentPlayerInput.ToString().Count() == 1) CurrentPlayerInput = 0;
+        else CurrentPlayerInput = int.Parse(CurrentPlayerInput.ToString().Substring(0, CurrentPlayerInput.ToString().Count()-1));
     }
 
     void HandleLeft()
     {
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, gameObject.transform);
         if (!IsOpen)
         {
-            Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, gameObject.transform);
             return;
         };
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.PageTurn, gameObject.transform);
@@ -276,9 +291,9 @@ public class BuddyBidding : MonoBehaviour {
 
     void HandleRight()
     {
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, gameObject.transform);
         if (!IsOpen)
         {
-            Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, gameObject.transform);
             return;
         };
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.PageTurn, gameObject.transform);
@@ -291,7 +306,8 @@ public class BuddyBidding : MonoBehaviour {
     {
         bool IsChosenItem = ChosenItems.Contains(auction.Item);
         CostState Buyer = auction.GetCostState();
-        if (Buyer == CostState.Module && IsChosenItem)
+        Log($"Item {auction.Item} sold to {(Buyer == CostState.NoBid ? "no one" : Buyer.ToString())} for {auction.CurrentBid}!");
+        if (Buyer != CostState.Player && IsChosenItem)
         {
             Strike($"You wanted the {auction.Item} but it was sold to someone else! Strike!!");
             LostWantedItems++;
@@ -304,12 +320,19 @@ public class BuddyBidding : MonoBehaviour {
         if (Buyer == CostState.Player && !IsChosenItem)
         {
             Strike($"You didn't want the {auction.Item} and yet you bought it! Strike!!");
-            //Change max bids of a wanted item auction accordingly
+            SpentMoney += auction.CurrentBid;
+            if (WantedItemBots.Count() > 0)
+            {
+                WantedItemBots.OrderByDescending(b => b.MaxBid).ToList()[0].MaxBid -= 50;
+                WantedItemMaxBidRunningTotal -= 50;
+                MaxofBotMaxes -= 50;
+            }
         }
         if (Buyer == CostState.Player && IsChosenItem)
         {
             BoughtWantedItems++;
             Log($"{auction.Item} sold to the defuser!");
+            SpentMoney += auction.CurrentBid;
         }
         if (BoughtWantedItems + LostWantedItems >= 3)
         {
@@ -360,7 +383,7 @@ public class BuddyBidding : MonoBehaviour {
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use !{0} to do something.";
+    private readonly string TwitchHelpMessage = @"Use !{0} #/d/e/</>/c to press a number button/delete button/enter button/left button/right button/flip the credit card. This can be chained like !{0} 123e. Use !{0} Bid X ### to bid on item number X with ### coins (Buddy is item number 1). Use !{0} Cycle to cycle through the items up for auction.";
 #pragma warning restore 414
 
     // Twitch Plays (TP) documentation: https://github.com/samfundev/KtaneTwitchPlays/wiki/External-Mod-Module-Support
@@ -369,7 +392,74 @@ public class BuddyBidding : MonoBehaviour {
     IEnumerator ProcessTwitchCommand (string Command)
     {
 #pragma warning restore IDE0051
-        yield return null;
+        Command = Command.ToLower();
+        Match m = Regex.Match(Command, @"^\s*([\d|e|d|<|>|c]+)\s*$");
+        if (m.Success)
+        {
+            yield return "strike";
+            yield return "solve";
+            string capture = m.Groups[1].Value;
+            foreach(char c in capture)
+            {
+                int i;
+                if(int.TryParse(c.ToString(), out i))
+                {
+                    KeypadNumbers[i].OnInteract();
+                }
+                if(c == 'e')
+                {
+                    SubmitButton.OnInteract();
+                }
+                if (c == 'd')
+                {
+                    DeleteButton.OnInteract();
+                }
+                if (c == '<')
+                {
+                    LeftButton.OnInteract();
+                }
+                if (c == '>')
+                {
+                    RightButton.OnInteract();
+                }
+                if (c == 'c')
+                {
+                    creditCard.GetComponent<KMSelectable>().OnInteract();
+                }
+                yield return new WaitForSeconds(0.1f);
+            }
+            yield break;
+        }
+        m = Regex.Match(Command, @"^\s*bid ([1-7]) (\d{1,3})\s*$");
+        if (m.Success && IsOpen)
+        {
+            yield return "strike";
+            yield return "solve";
+            Log(m.Groups[2].Value);
+            int auction = int.Parse(m.Groups[1].Value) - 1;
+            string bid = m.Groups[2].Value;
+            CurrentAuction = auction;
+            CurrentPlayerInput = 0;
+            UpdateDisplay();
+            foreach(char c in bid)
+            {
+                KeypadNumbers[int.Parse(c.ToString())].OnInteract();
+            }
+            SubmitButton.OnInteract();
+            yield break;
+        }
+        m = Regex.Match(Command, @"^\s*cycle\s*$");
+        if (m.Success && IsOpen)
+        {
+            yield return "strike";
+            yield return "solve";
+            for (int i = 0; i < Auctions.Count(); i++)
+            {
+                RightButton.OnInteract();
+                yield return new WaitForSeconds(1);
+            }
+            yield break;
+        }
     }
 
 #pragma warning disable IDE0051

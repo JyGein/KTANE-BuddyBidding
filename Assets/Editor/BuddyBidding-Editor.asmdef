@@ -1,0 +1,10 @@
+{
+  "name": "BuddyBidding-Editor",
+  "references": [
+    "BuddyBidding"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": []
+}
