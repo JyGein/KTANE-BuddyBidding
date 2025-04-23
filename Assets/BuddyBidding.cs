@@ -33,6 +33,8 @@ public class BuddyBidding : MonoBehaviour {
     public KMSelectable SubmitButton;
     public KMSelectable DeleteButton;
 
+    public List<Animator> Exclamations;
+
     public List<Texture> Items;
     public List<Texture> Buddies;
     public Buddy TodaysBuddy;
@@ -83,6 +85,7 @@ public class BuddyBidding : MonoBehaviour {
         GetComponent<KMSelectable>().OnFocus += delegate () { IsSelected = true; };
         GetComponent<KMSelectable>().OnDefocus += delegate () { IsSelected = false; };
         Auctions.Add(new Auction { Item = Item.Buddy });
+
     }
 
     void Activate () 
@@ -105,9 +108,10 @@ public class BuddyBidding : MonoBehaviour {
         else
         {
             Log("Wanted Items:");
+            int count = 0;
             foreach (Item item in ChosenItems)
             {
-                Log($"{item}");
+                Log($"Item {count}: {item}");
                 int BotNum = Rnd.Range(0, 3);
                 List<ModuleBot> NewBots = new List<ModuleBot>();
                 int ThisMaxBotsBid = 0;
@@ -194,20 +198,26 @@ public class BuddyBidding : MonoBehaviour {
     void HandleNumber(int digit)
     {
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, gameObject.transform);
+        KeypadNumbers[digit].GetComponent<Animator>().Play("Keypad Press");
         if (!IsOpen) return;
-        if (CurrentPlayerInput.ToString().Count() > 3) return;
+        if (CurrentPlayerInput.ToString().Count() >= 3) return;
         CurrentPlayerInput = int.Parse(CurrentPlayerInput.ToString() + digit.ToString());
     }
 
     void HandleSubmit()
     {
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, gameObject.transform);
+        SubmitButton.GetComponent<Animator>().Play("Keypad Press");
         if (!IsOpen) {
             Log($"Opening auctions!");
             IsOpen = true;
             foreach(Auction auction in Auctions)
             {
                 auction.Start(this);
+            }
+            foreach (Animator exclamation in Exclamations)
+            {
+                exclamation.Play("Blinking Exclamation");
             }
             return;
         }
@@ -270,6 +280,7 @@ public class BuddyBidding : MonoBehaviour {
     void HandleDelete()
     {
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, gameObject.transform);
+        DeleteButton.GetComponent<Animator>().Play("Keypad Press");
         if (!IsOpen) return;
         if (CurrentPlayerInput.ToString().Count() <= 0) return;
         if (CurrentPlayerInput.ToString().Count() == 1) CurrentPlayerInput = 0;
@@ -279,6 +290,7 @@ public class BuddyBidding : MonoBehaviour {
     void HandleLeft()
     {
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, gameObject.transform);
+        LeftButton.GetComponent<Animator>().Play("Arrow Press");
         if (!IsOpen)
         {
             return;
@@ -292,6 +304,7 @@ public class BuddyBidding : MonoBehaviour {
     void HandleRight()
     {
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, gameObject.transform);
+        RightButton.GetComponent<Animator>().Play("Arrow Press");
         if (!IsOpen)
         {
             return;
@@ -340,8 +353,9 @@ public class BuddyBidding : MonoBehaviour {
         }
     }
 
-    void Solve (string message) 
+    void Solve (string message)
     {
+        if (ModuleSolved) return;
         biddingPad.Timer.text = "";
         Module.HandlePass();
         Log(message);
@@ -466,6 +480,7 @@ public class BuddyBidding : MonoBehaviour {
     IEnumerator TwitchHandleForcedSolve ()
     {
 #pragma warning restore IDE0051
+        ModuleSolved = true;
         yield return null;
     }
 }

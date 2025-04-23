@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   width="391.09412mm"
+   height="416.47415mm"
+   viewBox="0 0 391.09411 416.47415"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -27,22 +27,30 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
-     inkscape:zoom="0.36213174"
+     inkscape:zoom="0.51213162"
      inkscape:rotation="90"
-     inkscape:cx="92.507771"
-     inkscape:cy="693.11792"
+     inkscape:cx="879.65668"
+     inkscape:cy="1109.0899"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
-     inkscape:window-x="-8"
+     inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
-     showgrid="false" /><defs
+     showgrid="false"><inkscape:page
+       x="0"
+       y="0"
+       width="391.09412"
+       height="416.47415"
+       id="page1"
+       margin="0 0 0 0"
+       bleed="0" /></sodipodi:namedview><defs
      id="defs1"><style
        id="style1">.cls-1{fill:#427d2a;}.cls-1,.cls-2{fill-rule:evenodd;}.cls-2{fill:#87cc71;}.cls-3{fill:#fff;}</style></defs><g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"><rect
+     id="layer1"
+     transform="translate(108.01919,119.47417)"><rect
        style="display:inline;fill:#ede700;fill-opacity:1;stroke:#0079ba;stroke-width:0.147295;paint-order:markers stroke fill"
        id="rect1"
        width="288.94806"
@@ -166,8 +174,8 @@
        inkscape:label="Royalcard Text"><tspan
          sodipodi:role="line"
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:38.1px;font-family:Garamond;-inkscape-font-specification:'Garamond Italic';fill:#000000;fill-opacity:1;stroke:#ffe500;stroke-width:0.264583;stroke-dasharray:none;stroke-opacity:1"
-         x="-226.22148"
-         y="-74.018776"
+         x="0"
+         y="0"
          id="tspan3-5">Royalcard</tspan></text><text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:34.925px;line-height:1;font-family:Impact;-inkscape-font-specification:Impact;text-align:center;letter-spacing:0px;text-anchor:middle;display:inline;fill:#9a00aa;fill-opacity:1;stroke:#ffe500;stroke-width:0.264583;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
