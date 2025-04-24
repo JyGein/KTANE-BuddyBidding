@@ -2220,7 +2220,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1632732172504050}
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: -0.00392, y: -0.00047, z: -0.000124}
+  m_LocalPosition: {x: -0.00381, y: 0.00053, z: -0.000124}
   m_LocalScale: {x: 0.0000295978, y: 0.000029597817, z: 0.02959782}
   m_Children: []
   m_Father: {fileID: 4921378354653744}
@@ -4564,7 +4564,7 @@ Animator:
   m_GameObject: {fileID: 1476718125756180}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 51c0cecf0dd50fa4aad615958901a0a1, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -6244,10 +6244,11 @@ MonoBehaviour:
   Module: {fileID: 114544093764720618}
   CCN: {fileID: 102986780257336042}
   CVV: {fileID: 102295923727223632}
-  CompanyMats:
-  - {fileID: 2100000, guid: 1ab8394e1c27d644bbc78723b65856d2, type: 2}
-  - {fileID: 2100000, guid: 2ef66a8508689324a9b66afd18b6b8e6, type: 2}
-  - {fileID: 2100000, guid: 5521abfcd36ff534fa6d8f64a0ed54ed, type: 2}
+  CompanyTextures:
+  - {fileID: 2800000, guid: 2db1128348487204db1870e4537dd8b7, type: 3}
+  - {fileID: 2800000, guid: c38c162b473887c40888b661d794b1e2, type: 3}
+  - {fileID: 2800000, guid: 9e14ab8df52ea814bbc841f65a93a5c1, type: 3}
+  Highlight: {fileID: 4693418356565968}
 --- !u!114 &114813221204249518
 MonoBehaviour:
   m_ObjectHideFlags: 1

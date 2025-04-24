@@ -18,13 +18,15 @@ public class CreditCard : MonoBehaviour {
 
     public TextMesh CCN;
     public TextMesh CVV;
-    public List<Material> CompanyMats;
+    public List<Texture> CompanyTextures;
+    public Transform Highlight;
 
     public delegate void CCLog(string message);
     public CCLog Log;
 	bool Flip ()
 	{
 		transform.Rotate(new Vector3(180, 0));
+        Highlight.localPosition = Highlight.localPosition * -1;
         Module.Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.PageTurn, gameObject.transform);
         return false;
     }
@@ -42,7 +44,7 @@ public class CreditCard : MonoBehaviour {
         Company = (Company)UnityEngine.Random.Range(0, 3);
         CCN.text = Util.LongToText(CreditCardNumber, 16).Insert(12, " ").Insert(8, " ").Insert(4, " ");
         CVV.text = CVVNumber.ToString();
-        GetComponent<MeshRenderer>().material = CompanyMats[(int)Company];
+        GetComponent<MeshRenderer>().material.mainTexture = CompanyTextures[(int)Company];
         Module.Log($"Credit Card Number: {CreditCardNumber}");
         Module.Log($"CVV: {CVVNumber}");
         Module.Log($"Company: {Company}");
