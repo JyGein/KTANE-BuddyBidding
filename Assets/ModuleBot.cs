@@ -28,6 +28,6 @@ public class ModuleBot
     public void StartTimer(Auction auction)
     {
         if (CurrentBid == auction.CurrentBid) return;
-        TimeTillBid = Rnd.Range(5, 41);
+        TimeTillBid = Rnd.Range(10, 36);
     }
 }
