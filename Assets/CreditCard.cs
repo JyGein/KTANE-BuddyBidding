@@ -32,8 +32,11 @@ public class CreditCard : MonoBehaviour {
     }
 
 	// Use this for initialization
-	void Start () {
-
+	void Start ()
+    {
+        Module.Log($"Credit Card Number: {CreditCardNumber}");
+        Module.Log($"CVV: {CVVNumber}");
+        Module.Log($"Company: {Company}");
     }
 
     void Awake()
@@ -45,9 +48,6 @@ public class CreditCard : MonoBehaviour {
         CCN.text = Util.LongToText(CreditCardNumber, 16).Insert(12, " ").Insert(8, " ").Insert(4, " ");
         CVV.text = CVVNumber.ToString();
         GetComponent<MeshRenderer>().material.mainTexture = CompanyTextures[(int)Company];
-        Module.Log($"Credit Card Number: {CreditCardNumber}");
-        Module.Log($"CVV: {CVVNumber}");
-        Module.Log($"Company: {Company}");
     }
 
     // Update is called once per frame

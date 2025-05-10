@@ -41,7 +41,7 @@ public static class Util
         int i;
         if(!int.TryParse(c.ToString(), out i))
         {
-            return c - 31;
+            return c - 55;
         }
         return i;
      }

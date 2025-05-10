@@ -97,7 +97,7 @@ public class BuddyBidding : MonoBehaviour {
     { //Shit
 #pragma warning restore IDE0051
         PlayerBalance = Step1.GenerateBalance(this, Bomb);
-        MaxofBotMaxes = PlayerBalance - 30 - PlayerBalance / 100;
+        MaxofBotMaxes = PlayerBalance - 30 - PlayerBalance / 20;
         Log($"Your Balance: {PlayerBalance}");
         ChosenItems = Step2.GenerateItems(this, Bomb);
         if (ChosenItems[0] == Item.Buddy)
@@ -111,7 +111,7 @@ public class BuddyBidding : MonoBehaviour {
             int count = 0;
             foreach (Item item in ChosenItems)
             {
-                Log($"Item {count}: {item}");
+                Log($"Item {++count}: {item}");
                 int BotNum = Rnd.Range(0, 3);
                 List<ModuleBot> NewBots = new List<ModuleBot>();
                 int ThisMaxBotsBid = 0;

@@ -6246,8 +6246,8 @@ MonoBehaviour:
   CVV: {fileID: 102295923727223632}
   CompanyTextures:
   - {fileID: 2800000, guid: 2db1128348487204db1870e4537dd8b7, type: 3}
-  - {fileID: 2800000, guid: c38c162b473887c40888b661d794b1e2, type: 3}
   - {fileID: 2800000, guid: 9e14ab8df52ea814bbc841f65a93a5c1, type: 3}
+  - {fileID: 2800000, guid: c38c162b473887c40888b661d794b1e2, type: 3}
   Highlight: {fileID: 4693418356565968}
 --- !u!114 &114813221204249518
 MonoBehaviour:
