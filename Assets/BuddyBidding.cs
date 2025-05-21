@@ -58,6 +58,7 @@ public class BuddyBidding : MonoBehaviour {
     public List<ModuleBot> WantedItemBots = new List<ModuleBot>();
     public int WantedItemMaxBidRunningTotal = 0;
     public int MaxofBotMaxes = 0;
+    public bool isTwitchPlays = false;
 
 #pragma warning disable IDE0051
     void Awake ()
@@ -347,7 +348,7 @@ public class BuddyBidding : MonoBehaviour {
             Log($"{auction.Item} sold to the defuser!");
             SpentMoney += auction.CurrentBid;
         }
-        if (BoughtWantedItems + LostWantedItems >= 3)
+        if (BoughtWantedItems + LostWantedItems >= 3 && BoughtWantedItems > 0)
         {
             Solve("All wanted items have been sold! Module solved.");
         }
@@ -371,6 +372,10 @@ public class BuddyBidding : MonoBehaviour {
 
     void Detonate ()
     {
+        if (isTwitchPlays)
+        {
+            Solve("Wait this is twitch plays, stopping detonation and solving since all wanted items are gone.");
+        }
         var bomb = GetComponentInParent<Bomb>();
         if (bomb && !bomb.HasDetonated)
         {
@@ -406,6 +411,7 @@ public class BuddyBidding : MonoBehaviour {
     IEnumerator ProcessTwitchCommand (string Command)
     {
 #pragma warning restore IDE0051
+        isTwitchPlays = true;
         Command = Command.ToLower();
         Match m = Regex.Match(Command, @"^\s*([\d|e|d|<|>|c]+)\s*$");
         if (m.Success)
@@ -480,6 +486,7 @@ public class BuddyBidding : MonoBehaviour {
     IEnumerator TwitchHandleForcedSolve ()
     {
 #pragma warning restore IDE0051
+        isTwitchPlays = true;
         ModuleSolved = true;
         yield return null;
     }

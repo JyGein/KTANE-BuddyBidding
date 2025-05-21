@@ -5918,6 +5918,7 @@ MonoBehaviour:
   DonataedAmount: 0
   WantedItemMaxBidRunningTotal: 0
   MaxofBotMaxes: 0
+  isTwitchPlays: 0
 --- !u!114 &114556052503932234
 MonoBehaviour:
   m_ObjectHideFlags: 1
